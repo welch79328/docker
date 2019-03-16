@@ -1,0 +1,112 @@
+#{{PROJECT_NAME}}
+#{{PROJECT_LOCAL_DOMAIN}}
+version: "3"
+
+networks:
+  frontend:
+  backend:
+
+services:
+
+  # nginx
+  nginx:
+    container_name: nginx
+    networks:
+      - backend
+      - frontend
+    image: tw-registry:6088/nginx
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - ./log/nginx:/var/log/nginx
+      - ./ssl:/etc/ssl
+      - ${DOCUMENT_ROOT}:/var/www/html/{{PROJECT_NAME}}
+      - ./project/{{PROJECT_NAME}}/nginx/conf:/etc/nginx/conf.d
+
+  # php
+  php:
+    container_name: php
+    networks:
+      - backend
+    image: tw-registry:6088/php:7.0-fpm
+    expose:
+      - 9000
+    ports:
+      - "8000:8000"
+    tty: true
+    volumes:
+      - ./php/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+      - ./php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      - ./php/php-fpm.d:/usr/local/etc/php-fpm.d
+      - ${DOCUMENT_ROOT}:/var/www/html/{{PROJECT_NAME}}
+
+#  # apache
+#  apache:
+#    container_name: apache
+#    networks:
+#      backend:
+#        aliases:
+#          - e-no.local
+#      frontend:
+#    image: tw-registry:6088/php:7.0-apache
+#    ports:
+#      - "443:443"
+#      - "80:80"
+#    volumes:
+#      - ./php/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+#      - ./php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+#      - ./ssl:/etc/ssl
+#      - ./log/apache:/var/log/apache
+#      - ./project/{{PROJECT_NAME}}/apache/conf:/etc/apache2/sites-enabled
+#      - ${DOCUMENT_ROOT}:/var/www/html/{{PROJECT_NAME}}
+#      - ./project/{{PROJECT_NAME}}/php/project.ini:/usr/local/etc/php/conf.d/project.ini
+#
+#  # mysql
+#  mysql:
+#    container_name: mysql
+#    networks:
+#      - backend
+#    ports:
+#      - "3306:3306"
+#    image: tw-registry:6088/mysql:5.6
+#    environment:
+#      MYSQL_ROOT_PASSWORD: admin
+#      MYSQL_DATABASE: {{PROJECT_NAME}}
+#      MYSQL_USER: test
+#      MYSQL_PASSWORD: test
+#    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --innodb_use_native_aio=0
+#    volumes:
+#      - ./mysql/data/{{PROJECT_NAME}}:/var/lib/mysql
+#      - ./project/{{PROJECT_NAME}}/sql:/include_sql
+#
+#  # phpmyadmin
+#  phpmyadmin:
+#    container_name: phpmyadmin
+#    networks:
+#      - frontend
+#      - backend
+#    image: tw-registry:6088/phpmyadmin:latest
+#    ports:
+#      - "8080:80"
+#    volumes:
+#      - ./phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
+#    environment:
+#      PMA_HOST: mysql
+#
+#  # phpmyadmin_cloud
+#  phpmyadmin_cloud:
+#    container_name: phpmyadmin_cloud
+#    networks:
+#      - frontend
+#      - backend
+#    image: tw-registry:6088/phpmyadmin:latest
+#    ports:
+#      - "8081:80"
+#    volumes:
+#      - ./phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
+#    environment:
+#      PMA_HOST:
+#      PMA_PORT: 3306
+#      PMA_USER :
+#      PMA_PASSWORD:

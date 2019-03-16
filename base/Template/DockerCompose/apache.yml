@@ -1,0 +1,18 @@
+# apache
+  apache:
+    container_name: apache
+    networks:
+      - backend
+      - frontend
+    image: tw-registry:6088/php:{{PHP_VERSION}}-apache
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - ./php/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+      - ./php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      - ./ssl:/etc/ssl
+      - ./log/apache:/var/log/apache
+      {{PROJECT_HTTP_CONF}}
+      {{PROJECT_VOLUMES}}
+      {{PROJECT_PHP_INI}}

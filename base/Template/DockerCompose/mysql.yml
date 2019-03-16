@@ -1,0 +1,31 @@
+# mysql
+  mysql:
+    container_name: mysql
+    networks:
+      - backend
+    ports:
+      - "3306:3306"
+    image: tw-registry:6088/mysql:{{MYSQL_VERSION}}
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: {{MYSQL_DATABASE}}
+      MYSQL_USER: {{MYSQL_USER}}
+      MYSQL_PASSWORD: {{MYSQL_PASSWORD}}
+    volumes:
+      - ./mysql/config/global.cnf:/etc/mysql/conf.d/global.cnf
+      - ./mysql/data/{{PROJECT_NAME}}/{{MYSQL_VERSION}}:/var/lib/mysql
+      {{MYSQL_SQL_FILE}}
+
+  # phpmyadmin
+  phpmyadmin:
+    container_name: phpmyadmin
+    networks:
+      - frontend
+      - backend
+    image: tw-registry:6088/phpmyadmin:latest
+    ports:
+      - "8080:80"
+    volumes:
+      - ./phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
+    environment:
+      PMA_HOST: mysql

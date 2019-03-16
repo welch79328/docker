@@ -1,0 +1,21 @@
+FROM php:{{PHP_VERSION}}-fpm
+
+# redis xdebug
+RUN pecl install redis-4.0.2 \
+    && pecl install xdebug-2.6.0 \
+    && docker-php-ext-enable redis xdebug
+
+# apt-get
+RUN apt-get update \
+  && apt-get install -y git libfreetype6-dev libjpeg62-turbo-dev libmcrypt-dev \
+  && apt-get clean
+
+# php module
+RUN docker-php-ext-install opcache bcmath pdo_mysql mysqli
+
+# composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# phalcon
+RUN git clone --depth=1 git://github.com/phalcon/cphalcon.git && cd cphalcon/build && ./install && docker-php-ext-enable phalcon
+RUN cd ../../ && rm -rf ./cphalcon/

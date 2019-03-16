@@ -1,0 +1,8 @@
+# redis
+  redis:
+    container_name: redis
+    networks:
+      - backend
+    image: redis:4.0
+    ports:
+      - "6379:6379"

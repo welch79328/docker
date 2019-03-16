@@ -1,0 +1,11 @@
+# python
+  python:
+    container_name: python
+    networks:
+      - backend
+    image: python:{{PYTHON_VERSION}}
+    expose:
+      - 9000
+    tty: true
+    volumes:
+      {{PROJECT_VOLUMES}}

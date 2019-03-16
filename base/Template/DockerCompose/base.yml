@@ -1,0 +1,17 @@
+#{{PROJECT_NAME}}
+#{{PROJECT_LOCAL_DOMAIN}}
+version: "3"
+
+networks:
+  frontend:
+  backend:
+
+services:
+
+  {{WEB_SERVER_CONTENT}}
+
+  {{DATABASE_CONTENT}}
+
+  {{CACHE_CONTENT}}
+
+  {{CLOUD_DATABASE_CONTENT}}

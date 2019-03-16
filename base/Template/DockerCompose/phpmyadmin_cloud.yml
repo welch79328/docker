@@ -1,0 +1,16 @@
+# phpmyadmin_cloud
+  phpmyadmin_cloud:
+    container_name: phpmyadmin_cloud
+    networks:
+      - frontend
+      - backend
+    image: tw-registry:6088/phpmyadmin:latest
+    ports:
+      - "8081:80"
+    volumes:
+      - ./phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
+    environment:
+      PMA_HOST: {{PMA_HOST}}
+      PMA_PORT: {{PMA_PORT}}
+      PMA_USER : {{PMA_USER}}
+      PMA_PASSWORD: {{PMA_PASSWORD}}

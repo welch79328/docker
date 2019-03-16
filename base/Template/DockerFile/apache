@@ -1,0 +1,40 @@
+FROM php:{{PHP_VERSION}}-apache
+
+# redis xdebug
+RUN pecl install redis-4.0.2 \
+    && pecl install xdebug-2.6.0 \
+    && docker-php-ext-enable redis xdebug
+
+### PHP Extension ###
+# opcache
+RUN docker-php-ext-install opcache
+# bcmath
+RUN docker-php-ext-install bcmath
+# pdo_mysql
+RUN docker-php-ext-install pdo_mysql
+# mysqli
+RUN docker-php-ext-install mysqli
+# exif
+RUN docker-php-ext-install exif
+# gd
+RUN apt-get update \
+    && apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev \
+    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-install -j$(nproc) gd \
+    && apt-get clean
+
+# composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# git
+RUN apt-get update \
+  && apt-get install -y git \
+  && apt-get clean
+
+## phalcon
+RUN git clone --depth=1 git://github.com/phalcon/cphalcon.git && cd cphalcon/build && ./install && docker-php-ext-enable phalcon
+RUN cd ../../ && rm -rf ./cphalcon/
+
+# apache ssl & rewrite
+RUN a2enmod rewrite
+RUN a2enmod ssl

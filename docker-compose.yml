@@ -1,0 +1,59 @@
+#mens_qzinjp
+#local.mens-qzin.jp
+version: "3"
+
+networks:
+  frontend:
+  backend:
+
+services:
+
+  # nginx
+  nginx:
+    container_name: nginx
+    networks:
+      - backend
+      - frontend
+    image: tw-registry:6088/nginx
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - ./log/nginx:/var/log/nginx
+      - ./ssl:/etc/ssl
+      - ./../mens_qzinjp:/var/www/html/mens_qzinjp
+      - ./project/mens_qzinjp/nginx/conf:/etc/nginx/conf.d
+
+  # php
+  php:
+    container_name: php
+    networks:
+      - backend
+    image: tw-registry:6088/php:7.0-fpm
+    expose:
+      - 9000
+    tty: true
+    volumes:
+      - ./php/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+      - ./php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      - ./php/php-fpm.d:/usr/local/etc/php-fpm.d
+      - ./../mens_qzinjp:/var/www/html/mens_qzinjp
+
+  
+
+  
+
+  # phpmyadmin_cloud
+  phpmyadmin_cloud:
+    container_name: phpmyadmin_cloud
+    networks:
+      - frontend
+      - backend
+    image: tw-registry:6088/phpmyadmin:latest
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: dbmens-qzinjp-20180125.c2rfhcz8zk5h.ap-northeast-1.rds.amazonaws.com
+      PMA_PORT: 3306
+      PMA_USER : root
+      PMA_PASSWORD: jDZ4sWeXrpgVHQD8

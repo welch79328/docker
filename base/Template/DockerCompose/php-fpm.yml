@@ -1,0 +1,15 @@
+# php
+  php:
+    container_name: php
+    networks:
+      - backend
+    image: tw-registry:6088/php:{{PHP_VERSION}}-fpm
+    expose:
+      - 9000
+    tty: true
+    volumes:
+      - ./php/conf.d/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+      - ./php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      - ./php/php-fpm.d:/usr/local/etc/php-fpm.d
+      {{PROJECT_VOLUMES}}
+      {{PROJECT_PHP_INI}}

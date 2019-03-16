@@ -1,0 +1,17 @@
+# nginx
+  nginx:
+    container_name: nginx
+    networks:
+      - backend
+      - frontend
+    image: tw-registry:6088/nginx
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - ./log/nginx:/var/log/nginx
+      - ./ssl:/etc/ssl
+      {{PROJECT_VOLUMES}}
+      {{PROJECT_HTTP_CONF}}
+
+  {{LANGUAGE_TEMPLATE}}
